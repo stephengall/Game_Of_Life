@@ -3,7 +3,7 @@ var grid = []; //tracks current state of the grid
 var counter = 0; //used to track how many frames have elapsed since last update
 
 function setup() {
-  scale = 40;
+  scale = 50;
   createCanvas(800, 800);
   for(var i = 0; i < scale; i++){
     var temp = [];
@@ -13,19 +13,31 @@ function setup() {
     grid.push(temp);
   }
 }
+//called every frame
 function draw() {
-  background(51);
+  background(255, 255, 230, 75);
   checkForClicks();
-  if(counter == 10){
+  if(counter == 15){
     evaluate();
     counter = 0;
   }
   printGrid();
   counter++;
 }
+//used for clearing canvas using the 'c' key
+function keyPressed(){
+  if(keyCode == 67){
+    for(var i = 0; i < scale; i++){
+      for(var j = 0; j < scale; j++){
+        grid[i][j] = false;
+      }
+    }
+  }
+}
+
 function checkForClicks(){
   //ensures indexes outside of the canvas are not accessed
-  if(mouseX < 0 || mouseX >= width || mouseY < 0 || mouseY >= width) return;
+  if(mouseX < 0 || mouseX >= width || mouseY < 0 || mouseY >= height) return;
 
   if(mouseIsPressed){
     var posX = floor(mouseX / width * scale);
@@ -43,11 +55,12 @@ function evaluate(){
     }
     nextGrid.push(temp);
   }
-
+  //evaluating every space for nextGrid
   for(var i = 0; i < scale; i++){
     for(var j = 0; j < scale; j++){
       var neighbours = 0;
 
+      //counting neighbours
       for(var x = -1; x <= 1; x++){
         for(var y = -1; y <= 1; y++){
           if((i + y >= 0 && i + y < scale) && (j + x >= 0 && j + x < scale)){
@@ -57,8 +70,12 @@ function evaluate(){
         }
       }
       //applying changes to nextGrid based on number of neighbours
+
+      //any live cell with two or three live neighbours survives
       if(grid[i][j] && (neighbours == 2 || neighbours == 3)) nextGrid[i][j] = true;
+      //any dead cell with three live neighbours becomes alive
       else if(!grid[i][j] && neighbours == 3) nextGrid[i][j] = true;
+      //all other live cells die in the next gen
       else nextGrid[i][j] = false;
     }
   }
@@ -66,6 +83,8 @@ function evaluate(){
   grid = nextGrid;
 }
 function printGrid(){
+  //draws grid at given scale, draws square where grid is true
+  colorMode(RGB, 200, 250);
   for(var i = 0; i < scale; i++){
     for(var j = 0; j < scale; j++){
       if(grid[i][j]){
@@ -73,7 +92,7 @@ function printGrid(){
         var yPos = j * (height / scale);
         //drawing rectangle
         noStroke();
-        fill(255);
+        fill(i * 10 % 255, j * 10 % 255, 150, 100);
         rect(xPos, yPos, width / scale, height / scale);
       }
     }
