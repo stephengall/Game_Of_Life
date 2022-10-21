@@ -1,10 +1,13 @@
 var scale; //dictates size of pixels in the grid
 var grid = []; //tracks current state of the grid
 var counter = 0; //used to track how many frames have elapsed since last update
+var slider;
 
 function setup() {
   scale = 50;
-  createCanvas(800, 800);
+  slider = createSlider(0, 30, 10, 1);
+
+  createCanvas(900, 900);
   for(var i = 0; i < scale; i++){
     var temp = [];
     for(var j = 0; j < scale; j++){
@@ -17,7 +20,8 @@ function setup() {
 function draw() {
   background(255, 255, 230, 75);
   checkForClicks();
-  if(counter == 15){
+
+  if(counter == 10){
     evaluate();
     counter = 0;
   }
