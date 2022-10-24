@@ -1,11 +1,13 @@
 var scale; //dictates size of pixels in the grid
 var grid = []; //tracks current state of the grid
-var counter = 0; //used to track how many frames have elapsed since last update
+var counter = 10; //used to track how many frames have elapsed since last update
 var slider;
+var checkbox;
 
 function setup() {
   scale = 50;
-  slider = createSlider(0, 30, 10, 1);
+  slider = createSlider(2, 60, 10, 1);
+  checkbox = createCheckbox('freeze', false);
 
   createCanvas(900, 900);
   for(var i = 0; i < scale; i++){
@@ -21,7 +23,7 @@ function draw() {
   background(255, 255, 230, 75);
   checkForClicks();
 
-  if(counter == 10){
+  if(counter >= slider.value() && !checkbox.checked()){
     evaluate();
     counter = 0;
   }
@@ -40,7 +42,7 @@ function keyPressed(){
 }
 
 function checkForClicks(){
-  //ensures indexes outside of the canvas are not accessed
+  //ensures indices outside of the canvas are not accessed
   if(mouseX < 0 || mouseX >= width || mouseY < 0 || mouseY >= height) return;
 
   if(mouseIsPressed){
